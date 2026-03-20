@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+state.json
+trades.csv
+backtest_trades.csv
+config.yaml

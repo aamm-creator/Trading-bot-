@@ -1,0 +1,38 @@
+exchange:
+  id: kraken
+  api_key: "YOUR_API_KEY_HERE"
+  api_secret: "YOUR_API_SECRET_HERE"
+  api_passphrase: ""
+  symbol: BTC/EUR
+  timeframe: 15m
+  use_margin: true
+  margin_mode: isolated
+  leverage: 3
+
+trading:
+  dry_run: true
+  paper_equity_eur: 10.0
+  poll_seconds: 60
+  candles_limit: 400
+  allow_short: false
+  maker_only: true
+  risk_per_trade: 0.005
+  max_daily_drawdown: 0.02
+  max_notional_eur: 100.0
+  fee_rate_maker: 0.0025
+  fee_rate_taker: 0.004
+
+strategy:
+  ema_fast: 20
+  ema_slow: 50
+  breakout_lookback: 20
+  atr_period: 14
+  atr_stop_mult: 1.8
+  rr_take_profit: 1.6
+  min_volume_ratio: 1.2
+  min_atr_percentile: 0.40
+
+storage:
+  state_file: state.json
+  trades_file: trades.csv
+  backtest_trades_file: backtest_trades.csv
