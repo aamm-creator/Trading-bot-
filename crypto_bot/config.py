@@ -29,6 +29,7 @@ class TradingConfig:
     allow_short: bool
     maker_only: bool
     risk_per_trade: float
+    risk_per_trade_fear: float       # higher risk when sentiment = fear (buy the dip)
     max_daily_drawdown: float
     max_notional_eur: float
     fee_rate_maker: float
@@ -37,14 +38,49 @@ class TradingConfig:
 
 @dataclass
 class StrategyConfig:
+    # EMAs
     ema_fast: int
     ema_slow: int
+    ema_regime: int                  # 200 EMA for bull/bear regime
+
+    # Bollinger Bands
+    bb_period: int                   # Bollinger Band period (20)
+    bb_std: float                    # Bollinger Band std dev (2.0)
+
+    # Keltner Channels
+    kc_period: int                   # Keltner Channel period (20)
+    kc_atr_mult: float               # Keltner Channel ATR multiplier (1.5)
+
+    # Squeeze
+    squeeze_lookback: int            # How many bars squeeze must persist
+
+    # Breakout (kept for compatibility)
     breakout_lookback: int
+
+    # ATR / stops
     atr_period: int
     atr_stop_mult: float
     rr_take_profit: float
+
+    # Volume
     min_volume_ratio: float
-    min_atr_percentile: float
+
+    # ADX
+    adx_period: int
+    min_adx: float
+
+    # EMA slope
+    ema_slope_lookback: int
+
+    # RSI mean reversion (Layer 3)
+    rsi_period: int                  # RSI period (14)
+    rsi_oversold: float              # RSI buy-the-dip threshold (35)
+    rsi_overbought: float            # RSI short threshold (65)
+
+    # Sentiment proxy
+    sentiment_lookback: int          # lookback for fear/greed proxy (90 bars)
+    fear_threshold: float            # below this = fear (buy more aggressively)
+    greed_threshold: float           # above this = greed (reduce size / take profit)
 
 
 @dataclass
@@ -95,21 +131,36 @@ def load_config(path: str | Path) -> BotConfig:
             candles_limit=int(trading.get("candles_limit", 400)),
             allow_short=bool(trading.get("allow_short", False)),
             maker_only=bool(trading.get("maker_only", True)),
-            risk_per_trade=float(trading.get("risk_per_trade", 0.005)),
-            max_daily_drawdown=float(trading.get("max_daily_drawdown", 0.02)),
-            max_notional_eur=float(trading.get("max_notional_eur", 100.0)),
-            fee_rate_maker=float(trading.get("fee_rate_maker", 0.0025)),
-            fee_rate_taker=float(trading.get("fee_rate_taker", 0.004)),
+            risk_per_trade=float(trading.get("risk_per_trade", 0.01)),
+            risk_per_trade_fear=float(trading.get("risk_per_trade_fear", 0.02)),
+            max_daily_drawdown=float(trading.get("max_daily_drawdown", 0.05)),
+            max_notional_eur=float(trading.get("max_notional_eur", 50000.0)),
+            fee_rate_maker=float(trading.get("fee_rate_maker", 0.001)),
+            fee_rate_taker=float(trading.get("fee_rate_taker", 0.001)),
         ),
         strategy=StrategyConfig(
             ema_fast=int(strategy.get("ema_fast", 20)),
             ema_slow=int(strategy.get("ema_slow", 50)),
+            ema_regime=int(strategy.get("ema_regime", 200)),
+            bb_period=int(strategy.get("bb_period", 20)),
+            bb_std=float(strategy.get("bb_std", 2.0)),
+            kc_period=int(strategy.get("kc_period", 20)),
+            kc_atr_mult=float(strategy.get("kc_atr_mult", 1.5)),
+            squeeze_lookback=int(strategy.get("squeeze_lookback", 6)),
             breakout_lookback=int(strategy.get("breakout_lookback", 20)),
             atr_period=int(strategy.get("atr_period", 14)),
-            atr_stop_mult=float(strategy.get("atr_stop_mult", 1.8)),
-            rr_take_profit=float(strategy.get("rr_take_profit", 1.6)),
+            atr_stop_mult=float(strategy.get("atr_stop_mult", 2.5)),
+            rr_take_profit=float(strategy.get("rr_take_profit", 3.0)),
             min_volume_ratio=float(strategy.get("min_volume_ratio", 1.2)),
-            min_atr_percentile=float(strategy.get("min_atr_percentile", 0.4)),
+            adx_period=int(strategy.get("adx_period", 14)),
+            min_adx=float(strategy.get("min_adx", 20.0)),
+            ema_slope_lookback=int(strategy.get("ema_slope_lookback", 5)),
+            rsi_period=int(strategy.get("rsi_period", 14)),
+            rsi_oversold=float(strategy.get("rsi_oversold", 35.0)),
+            rsi_overbought=float(strategy.get("rsi_overbought", 65.0)),
+            sentiment_lookback=int(strategy.get("sentiment_lookback", 90)),
+            fear_threshold=float(strategy.get("fear_threshold", 25.0)),
+            greed_threshold=float(strategy.get("greed_threshold", 75.0)),
         ),
         storage=StorageConfig(
             state_file=str(storage.get("state_file", "state.json")),

@@ -1,0 +1,58 @@
+exchange:
+  id: binance
+  api_key: ""
+  api_secret: ""
+  api_passphrase: ""
+  symbol: BTC/USDT
+  timeframe: 4h
+  use_margin: true
+  margin_mode: isolated
+  leverage: 5
+
+trading:
+  dry_run: true
+  paper_equity_eur: 1000.0
+  poll_seconds: 60
+  candles_limit: 400
+  allow_short: true
+  maker_only: true
+  risk_per_trade: 0.02
+  risk_per_trade_fear: 0.04     # even more aggressive in fear (was 3.5%)
+  max_daily_drawdown: 0.08
+  max_notional_eur: 50000.0
+  fee_rate_maker: 0.001
+  fee_rate_taker: 0.001
+
+strategy:
+  ema_fast: 20
+  ema_slow: 50
+  ema_regime: 200
+  ema_slope_lookback: 5
+
+  bb_period: 20
+  bb_std: 2.0
+  kc_period: 20
+  kc_atr_mult: 1.5
+  squeeze_lookback: 6
+  breakout_lookback: 20
+
+  atr_period: 14
+  atr_stop_mult: 2.0
+  rr_take_profit: 3.0          # not used directly anymore (partial TP logic in code)
+
+  min_volume_ratio: 1.0
+  adx_period: 14
+  min_adx: 18
+
+  rsi_period: 14
+  rsi_oversold: 38
+  rsi_overbought: 62
+
+  sentiment_lookback: 90
+  fear_threshold: 30
+  greed_threshold: 75
+
+storage:
+  state_file: state.json
+  trades_file: trades.csv
+  backtest_trades_file: backtest_trades.csv
