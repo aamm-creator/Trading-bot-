@@ -1,0 +1,27 @@
+symbol: ETH/EUR
+dry_run: true
+min_spread_pct: 0.15         # minimum spread to trade (after fees)
+trade_amount_eur: 500.0      # EUR per trade
+poll_seconds: 2              # check every 2 seconds
+max_trades_per_hour: 20      # rate limit
+
+# Fees
+kraken_fee: 0.0016           # 0.16% maker
+binance_fee: 0.0002          # 0.02% maker with BNB discount
+
+# Telegram
+telegram_token: "8474324608:AAF89bsm0o4FFduao2DIaIRcQYlrnpytv_Y"
+telegram_chat_id: "8317437816"
+
+# Exchange credentials
+kraken:
+  api_key: "YOUR_KRAKEN_API_KEY"
+  api_secret: "YOUR_KRAKEN_API_SECRET"
+
+binance:
+  api_key: "YOUR_BINANCE_API_KEY"
+  api_secret: "YOUR_BINANCE_API_SECRET"
+
+# State files
+state_file: data/arbitrage_state.json
+trades_file: data/arbitrage_trades.csv
