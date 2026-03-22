@@ -5,3 +5,4 @@ state.json
 trades.csv
 backtest_trades.csv
 config.yaml
+data/*.csv
